@@ -12,6 +12,7 @@ class CustomUser(AbstractUser):
     balance = models.fields.DecimalField(
         max_digits=10,
         decimal_places=2,
+        default=0.00,
         verbose_name="Баланс",
         help_text="Текущий остаток по счету",
     )
