@@ -1,0 +1,1 @@
+# MoneyDistrib-test-task
