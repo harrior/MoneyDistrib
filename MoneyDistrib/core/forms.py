@@ -1,6 +1,5 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator
 
 from .models import CustomUser
 
@@ -20,7 +19,6 @@ class MoneyTransferForm(forms.Form):
         label="Сумма перевода (на всех получателей)",
         max_digits=10,
         decimal_places=2,
-        validators=[MinValueValidator(0)],
         widget=forms.NumberInput(
             attrs={"class": "form-control", "step": 0.01, "min": 0}
         ),
@@ -41,7 +39,7 @@ class MoneyTransferForm(forms.Form):
             if len(set(inns)) != len(inns):
                 raise ValidationError(f"В списке ИНН встречаются дубликаты")
 
-        return CustomUser.objects.filter(inn__in=inns)
+        return list(CustomUser.objects.filter(inn__in=inns))
 
     def clean(self):
         cleaned_data = super().clean()
@@ -50,7 +48,13 @@ class MoneyTransferForm(forms.Form):
         inn_list = cleaned_data.get("inn_list")
         amount = cleaned_data.get("amount")
 
+        if not isinstance(sender, CustomUser):
+            raise ValidationError(f"Отправителя с таким id нет в системе")
+
         if not inn_list:
+            raise ValidationError(f"Список ИНН содержит ошибки")
+
+        if not all(map(lambda inn: isinstance(inn, CustomUser), inn_list)):
             raise ValidationError(f"Список ИНН содержит ошибки")
 
         if sender in inn_list:
