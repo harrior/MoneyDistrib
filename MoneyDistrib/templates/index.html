@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Перевод средств</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      width: 1000px;
+      margin: 20px auto;
+    }
+    
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    
+    form {
+      margin-top: 20px;
+    }
+    
+    input[type="submit"] {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    
+    input[type="submit"]:hover {
+      background-color: #45a049;
+    }
+    
+    .error-message {
+      background-color: #f44336;
+      color: white;
+      padding: 10px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+    
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin: 4px 0;
+      box-sizing: border-box;
+    }
+  </style>
+<body>
+<h1>Перевод средств</h1>
+
+{% if error_message %}
+<div class="error-message">
+  {{ error_message }}
+</div>
+{% endif %}
+
+<table>
+  <tr>
+    <th>User</th>
+    <th>ИНН</th>
+    <th>Баланс</th>
+  </tr>
+  {% for user in users %}
+  <tr>
+    <td>{{ user.username }}</td>
+    <td>{{ user.inn }}</td>
+    <td>{{ user.balance }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+<form method="POST">
+  {% csrf_token %}
+  <table>
+    {{ form.as_table }}
+  </table>
+  <input type="submit" value="Отправить">
+</form>
+</body>
+</html>
