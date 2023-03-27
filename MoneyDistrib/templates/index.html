@@ -55,7 +55,7 @@
       margin-bottom: 20px;
       border-radius: 4px;
     }
-    
+
     input, select {
       width: 100%;
       padding: 8px;
@@ -66,10 +66,12 @@
 <body>
 <h1>Перевод средств</h1>
 
-{% if error_message %}
-<div class="error-message">
-  {{ error_message }}
-</div>
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}
+  <li>{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+  {% endfor %}
+</ul>
 {% endif %}
 
 <table>
