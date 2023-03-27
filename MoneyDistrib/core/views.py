@@ -10,6 +10,9 @@ from .models import CustomUser
 
 
 def transfer_money(sender, acceptor, amount):
+    """
+    Переводит деньги от отправителя к получателю.
+    """
     if sender.balance < amount:
         raise ValidationError(f"У отправителя недостаточно средств.")
 
@@ -20,6 +23,12 @@ def transfer_money(sender, acceptor, amount):
 
 
 def index(request):
+    """
+    Обработчик основного представления приложения. Отображает форму для
+    отправки денег, а также список пользователей. В случае успешной отправки
+    денег перенаправляет на ту же страницу с сообщением об успешной операции.
+    В случае возникновения ошибок, отображает сообщения об ошибках.
+    """
     form = MoneyTransferForm(request.POST or None)
     users = CustomUser.objects.exclude(inn="")
 

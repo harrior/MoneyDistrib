@@ -9,6 +9,10 @@ from ..models import CustomUser
 
 
 class IndexViewTest(TestCase):
+    """
+    Тестирование представления IndexView.
+    """
+
     def setUp(self):
         self.client = Client()
         self.index_url = reverse("core:index")
@@ -27,11 +31,17 @@ class IndexViewTest(TestCase):
         )
 
     def test_get_request(self):
+        """
+        Тестирование успешного GET-запроса к IndexView.
+        """
         response = self.client.get(self.index_url)
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, "index.html")
 
     def test_post_request_success(self):
+        """
+        Тестирование успешного POST-запроса к IndexView.
+        """
         data = {
             "sender": self.user1.id,
             "amount": 100,
@@ -41,6 +51,9 @@ class IndexViewTest(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
     def test_post_request_fail(self):
+        """
+        Тестирование POST-запроса с ошибкой к IndexView.
+        """
         data = {
             "sender": self.user1.id,
             "amount": self.user1.balance * 2,
@@ -50,6 +63,9 @@ class IndexViewTest(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_money_transfer(self):
+        """
+        Тестирование процесса перевода денег между пользователями.
+        """
         test_cases = [
             {
                 "data": {
@@ -87,6 +103,9 @@ class IndexViewTest(TestCase):
                     self.assertEqual(user.balance, expected_balance)
 
     def test_error_handling(self):
+        """
+        Тестирование обработки ошибок в IndexView.
+        """
         data = {
             "sender": self.user1.id,
             "amount": -100,
@@ -105,6 +124,10 @@ class IndexViewTest(TestCase):
 
 
 class MoneyTransferRollbackTest(TransactionTestCase):
+    """
+    Тестирование отката транзакции при возникновении ошибки.
+    """
+
     def setUp(self):
         self.client = Client()
 
@@ -121,6 +144,10 @@ class MoneyTransferRollbackTest(TransactionTestCase):
         )
 
     def test_rollback_on_data_change(self):
+        """
+        Тестирование механизма отката транзакции при возникновении ошибки.
+        """
+
         def change_data_during_transaction():
             with transaction.atomic():
                 self.client.post(

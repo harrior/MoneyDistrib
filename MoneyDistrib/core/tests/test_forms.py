@@ -5,6 +5,10 @@ from ..models import CustomUser
 
 
 class MoneyTransferFormTest(TestCase):
+    """
+    Тестирование формы MoneyTransferForm.
+    """
+
     def setUp(self):
         self.user1 = CustomUser.objects.create_user(
             username="user1", password="password", inn="123456789012", balance=100
@@ -20,6 +24,9 @@ class MoneyTransferFormTest(TestCase):
         )
 
     def test_form_validation(self):
+        """
+        Тестирование валидации формы MoneyTransferForm.
+        """
         form = MoneyTransferForm(
             data={
                 "sender": self.user1.id,
@@ -101,7 +108,10 @@ class MoneyTransferFormTest(TestCase):
         )
         self.assertFalse(form.is_valid())
 
-    def test_form_save(self):
+    def test_form_cleaned_data(self):
+        """
+        Тестирование корректности очищенных данных формы MoneyTransferForm после валидации.
+        """
         form = MoneyTransferForm(
             data={
                 "sender": self.user1.id,
@@ -120,6 +130,9 @@ class MoneyTransferFormTest(TestCase):
         )
 
     def test_form_error_messages(self):
+        """
+        Тестирование сообщений об ошибках в форме MoneyTransferForm.
+        """
         form = MoneyTransferForm(
             data={
                 "sender": self.user1.id,

@@ -5,6 +5,11 @@ from .models import CustomUser
 
 
 class MoneyTransferForm(forms.Form):
+    """
+    Класс MoneyTransferForm представляет собой форму для осуществления
+    денежных переводов между пользователями на основе CustomUser модели.
+    """
+
     sender = forms.ModelChoiceField(
         queryset=CustomUser.objects.exclude(inn=""),
         label="Отправитель",
@@ -25,6 +30,10 @@ class MoneyTransferForm(forms.Form):
     )
 
     def clean_inn_list(self):
+        """
+        Метод clean_inn_list проверяет валидность и уникальность ИНН в списке
+        получателей и возвращает список объектов CustomUser, соответствующих ИНН.
+        """
         inn_list = self.cleaned_data["inn_list"]
 
         inns = [
@@ -42,6 +51,10 @@ class MoneyTransferForm(forms.Form):
         return list(CustomUser.objects.filter(inn__in=inns))
 
     def clean(self):
+        """
+        Метод clean проверяет корректность данных формы, включая сумму перевода,
+        отправителя и получателей.
+        """
         cleaned_data = super().clean()
 
         sender = cleaned_data.get("sender")
@@ -68,4 +81,7 @@ class MoneyTransferForm(forms.Form):
 
 
 def is_valid_inn(inn):
+    """
+    Функция is_valid_inn проверяет валидность ИНН на основе его длины и состава.
+    """
     return inn.isdigit() and 10 <= len(inn) <= 12

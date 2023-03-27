@@ -4,7 +4,14 @@ from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 
 
+@admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
+    """
+    Класс CustomUserAdmin наследует UserAdmin для настройки
+    представления и управления моделью CustomUser в административном
+    интерфейсе Django.
+    """
+
     list_display = (
         "username",
         "email",
@@ -61,6 +68,3 @@ class CustomUserAdmin(UserAdmin):
         "inn",
     )
     ordering = ("username",)
-
-
-admin.site.register(CustomUser, CustomUserAdmin)

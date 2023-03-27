@@ -3,6 +3,12 @@ from django.db import models
 
 
 class CustomUser(AbstractUser):
+    """
+    Класс CustomUser представляет собой модель пользователя с дополнительными
+    полями для хранения ИНН и баланса на счете. Наследует от стандартной модели
+    AbstractUser.
+    """
+
     inn = models.fields.CharField(
         max_length=12,
         unique=True,
