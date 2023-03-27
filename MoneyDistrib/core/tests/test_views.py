@@ -2,7 +2,7 @@ from decimal import Decimal
 from http import HTTPStatus
 
 from django.db import transaction
-from django.test import TestCase, Client, TransactionTestCase
+from django.test import Client, TestCase, TransactionTestCase
 from django.urls import reverse
 
 from ..models import CustomUser

@@ -1,9 +1,9 @@
-from decimal import Decimal, ROUND_DOWN
+from decimal import ROUND_DOWN, Decimal
 
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 
 from .forms import MoneyTransferForm
 from .models import CustomUser
