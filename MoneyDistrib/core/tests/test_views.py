@@ -62,45 +62,59 @@ class IndexViewTest(TestCase):
         response = self.client.post(self.index_url, data)
         self.assertEqual(response.status_code, HTTPStatus.OK)
 
-    def test_money_transfer(self):
+    def test_money_transfer_one(self):
         """
         Тестирование процесса перевода денег между пользователями.
         """
-        test_cases = [
-            {
-                "data": {
-                    "sender": self.user1.id,
-                    "amount": 100,
-                    "inn_list": f"{self.user2.inn} {self.user3.inn} {self.user4.inn}",
-                },
-                "expected_balances": {
-                    self.user1: Decimal("0.01"),
-                    self.user2: Decimal("33.33"),
-                    self.user3: Decimal("33.33"),
-                    self.user4: Decimal("33.33"),
-                },
-            },
-            {
-                "data": {
-                    "sender": self.user2.id,
-                    "amount": 33.33,
-                    "inn_list": f"{self.user1.inn} {self.user3.inn}",
-                },
-                "expected_balances": {
-                    self.user1: Decimal("16.67"),
-                    self.user2: Decimal("0.01"),
-                    self.user3: Decimal("49.99"),
-                },
-            },
-        ]
 
-        for case in test_cases:
-            with self.subTest(case=case):
-                self.client.post(self.index_url, case["data"])
+        data = {
+            "sender": self.user1.id,
+            "amount": 100,
+            "inn_list": f"{self.user2.inn} {self.user3.inn} {self.user4.inn}",
+        }
 
-                for user, expected_balance in case["expected_balances"].items():
-                    user.refresh_from_db()
-                    self.assertEqual(user.balance, expected_balance)
+        expected_balances = {
+            self.user1: Decimal("0.01"),
+            self.user2: Decimal("33.33"),
+            self.user3: Decimal("33.33"),
+            self.user4: Decimal("33.33"),
+        }
+
+        self.client.post(self.index_url, data)
+
+        for user, expected_balance in expected_balances.items():
+            user.refresh_from_db()
+            self.assertEqual(user.balance, expected_balance)
+
+    def test_money_transfer_second(self):
+        """
+        Тестирование процесса перевода денег между пользователями.
+        """
+
+        data_first_transfer = {
+            "sender": self.user1.id,
+            "amount": 100,
+            "inn_list": f"{self.user2.inn} {self.user3.inn} {self.user4.inn}",
+        }
+
+        data_second_transfer = {
+            "sender": self.user2.id,
+            "amount": 33.33,
+            "inn_list": f"{self.user1.inn} {self.user3.inn}",
+        }
+
+        expected_balances = {
+            self.user1: Decimal("16.67"),
+            self.user2: Decimal("0.01"),
+            self.user3: Decimal("49.99"),
+        }
+
+        self.client.post(self.index_url, data_first_transfer)
+        self.client.post(self.index_url, data_second_transfer)
+
+        for user, expected_balance in expected_balances.items():
+            user.refresh_from_db()
+            self.assertEqual(user.balance, expected_balance)
 
     def test_error_handling(self):
         """

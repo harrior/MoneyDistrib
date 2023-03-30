@@ -27,86 +27,85 @@ class MoneyTransferFormTest(TestCase):
         """
         Тестирование валидации формы MoneyTransferForm.
         """
-        form = MoneyTransferForm(
-            data={
-                "sender": self.user1.id,
-                "amount": self.user1.balance,
-                "inn_list": f"{self.user2.inn} {self.user3.inn} {self.user4.inn}",
-            }
-        )
-        self.assertTrue(form.is_valid())
+        test_cases = [
+            {
+                "data": {
+                    "sender": self.user1.id,
+                    "amount": self.user1.balance,
+                    "inn_list": f"{self.user2.inn} {self.user3.inn} {self.user4.inn}",
+                },
+                "expected_result": True,
+            },
+            {
+                "data": {
+                    "sender": self.user1.id,
+                    "amount": self.user1.balance,
+                    "inn_list": f"{self.user2.inn}",
+                },
+                "expected_result": True,
+            },
+            {
+                "data": {
+                    "sender": self.user1.id,
+                    "amount": -100500,
+                    "inn_list": f"{self.user2.inn} {self.user3.inn}",
+                },
+                "expected_result": False,
+            },
+            {
+                "data": {
+                    "sender": self.user1.id,
+                    "amount": self.user1.balance * 2,
+                    "inn_list": f"{self.user2.inn} {self.user3.inn}",
+                },
+                "expected_result": False,
+            },
+            {
+                "data": {
+                    "sender": self.user1.id,
+                    "amount": self.user1.balance,
+                    "inn_list": f"{self.user1.inn} {self.user3.inn}",
+                },
+                "expected_result": False,
+            },
+            {
+                "data": {
+                    "sender": 100500,
+                    "amount": 100,
+                    "inn_list": f"{self.user1.inn} {self.user3.inn}",
+                },
+                "expected_result": False,
+            },
+            {
+                "data": {
+                    "sender": self.user1.id,
+                    "amount": self.user1.balance,
+                    "inn_list": f"111111111111 {self.user3.inn}",
+                },
+                "expected_result": False,
+            },
+            {
+                "data": {
+                    "sender": self.user1.id,
+                    "amount": self.user1.balance,
+                    "inn_list": f"111111111111 111111111112",
+                },
+                "expected_result": False,
+            },
+            {
+                "data": {
+                    "sender": self.user1.id,
+                    "amount": self.user1.balance,
+                    "inn_list": f"",
+                },
+                "expected_result": False,
+            },
+        ]
 
-        form = MoneyTransferForm(
-            data={
-                "sender": self.user1.id,
-                "amount": self.user1.balance,
-                "inn_list": f"{self.user2.inn}",
-            }
-        )
-        self.assertTrue(form.is_valid())
-
-        form = MoneyTransferForm(
-            data={
-                "sender": self.user1.id,
-                "amount": -100500,
-                "inn_list": f"{self.user2.inn} {self.user3.inn}",
-            }
-        )
-        self.assertFalse(form.is_valid())
-
-        form = MoneyTransferForm(
-            data={
-                "sender": self.user1.id,
-                "amount": self.user1.balance * 2,
-                "inn_list": f"{self.user2.inn} {self.user3.inn}",
-            }
-        )
-        self.assertFalse(form.is_valid())
-
-        form = MoneyTransferForm(
-            data={
-                "sender": self.user1.id,
-                "amount": self.user1.balance,
-                "inn_list": f"{self.user1.inn} {self.user3.inn}",
-            }
-        )
-        self.assertFalse(form.is_valid())
-
-        form = MoneyTransferForm(
-            data={
-                "sender": 100500,
-                "amount": 100,
-                "inn_list": f"{self.user1.inn} {self.user3.inn}",
-            }
-        )
-        self.assertFalse(form.is_valid())
-
-        form = MoneyTransferForm(
-            data={
-                "sender": self.user1.id,
-                "amount": self.user1.balance,
-                "inn_list": f"111111111111 {self.user3.inn}",
-            }
-        )
-        self.assertFalse(form.is_valid())
-
-        form = MoneyTransferForm(
-            data={
-                "sender": self.user1.id,
-                "amount": self.user1.balance,
-                "inn_list": f"111111111111 111111111112",
-            }
-        )
-        self.assertFalse(form.is_valid())
-
-        form = MoneyTransferForm(
-            data={
-                "sender": self.user1.id,
-                "amount": self.user1.balance,
-                "inn_list": f"",
-            }
-        )
-        self.assertFalse(form.is_valid())
+        for case in test_cases:
+            with self.subTest(case=case):
+                form = MoneyTransferForm(data=case["data"])
+                self.assertEqual(form.is_valid(), case["expected_result"])
 
     def test_form_cleaned_data(self):
         """

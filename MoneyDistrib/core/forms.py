@@ -48,7 +48,7 @@ class MoneyTransferForm(forms.Form):
             if len(set(inns)) != len(inns):
                 raise ValidationError(f"В списке ИНН встречаются дубликаты")
 
-        return list(CustomUser.objects.filter(inn__in=inns))
+        return CustomUser.objects.filter(inn__in=inns)
 
     def clean(self):
         """
